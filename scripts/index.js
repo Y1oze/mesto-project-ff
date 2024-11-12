@@ -1,12 +1,14 @@
 // @todo: Функция удаления карточки
 function deleteCard(cardItem) {
-  cardItem.remove();
+  cardItem.remove(); // Удаляем карточку
 }
 
 // @todo: Функция создания карточки
 function createCard(data, deleteCardCallback) {
   const cardTemplate = document.querySelector("#card-template");
-  const cardElement = cardTemplate.content.cloneNode(true); // Клонируем шаблон
+  const cardElement = cardTemplate.content
+    .querySelector(".places__item")
+    .cloneNode(true);
 
   // Заполняем данные в карточке
   const cardImage = cardElement.querySelector(".card__image");
@@ -17,17 +19,12 @@ function createCard(data, deleteCardCallback) {
   cardImage.alt = data.name;
   cardTitle.textContent = data.name;
 
-  // Оборачиваем все в контейнер для карточки, добавляя класс .places__item
-  const cardItem = document.createElement("div");
-  cardItem.classList.add("places__item");
-  cardItem.appendChild(cardElement);
-
   // Добавляем обработчик для кнопки удаления
   cardDeleteButton.addEventListener("click", () =>
-    deleteCardCallback(cardItem)
+    deleteCardCallback(cardElement)
   );
 
-  return cardItem;
+  return cardElement;
 }
 
 // @todo: Вывести карточки на страницу
