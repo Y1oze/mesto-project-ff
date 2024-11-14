@@ -39,3 +39,6 @@ function renderCards() {
 
 // Вызов функции отображения карточек
 renderCards();
+
+
+
