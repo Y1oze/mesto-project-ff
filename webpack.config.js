@@ -1,62 +1,49 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin'); 
 
 module.exports = {
-  entry: './src/index.js',
-  output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
-    publicPath: ''
+  entry: {main: './src/scripts/index.js'},
+    output: {
+      clean: true,
+      path: path.resolve(__dirname, 'dist'),
+      filename: 'main.js',
+      publicPath: ''
   },
-  mode: 'development', // Переключите на 'production' для финальной сборки
+    mode: 'development',
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
+    static: path.resolve(__dirname, './dist'),
     compress: true,
-    port: 9000
+    port: 8080,
+    open: true
   },
-  module: {
+    module: {
     rules: [
       {
         test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env']
-          }
-        }
+        use: 'babel-loader',
+        exclude: '/node_modules/'
       },
       {
-        test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader']
-      },
-      {
-        test: /\.(png|jpg|gif|svg)$/,
+        test: /\.(png|svg|jpg|gif|woff(2)?|eot|ttf|otf)$/,
         type: 'asset/resource'
       },
       {
-        test: /\.(woff(2)?|eot|ttf|otf|svg)$/,
-        type: 'asset/inline'
-      }
-    ]
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, {
+          loader: 'css-loader',
+          options: {importLoaders: 1}
+        },
+      'postcss-loader']
+      },
+      ]
   },
   plugins: [
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: './src/index.html'
     }),
-    new MiniCssExtractPlugin()
-  ],
-  optimization: {
-    minimize: true,
-    minimizer: [
-      new CssMinimizerPlugin(),
-      new TerserPlugin()
-    ],
-    
-  }
+    new CleanWebpackPlugin(),
+    new MiniCssExtractPlugin(),
+  ]
 };
