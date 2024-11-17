@@ -1,5 +1,3 @@
-export { createCard, deleteCard, likeCard };
-
 const cardTemplate = document.querySelector("#card-template").content;
 
 function createCard(item, deleteCard, likeCard, onImageClick) {
@@ -29,3 +27,5 @@ function deleteCard(evt) {
 function likeCard(evt) {
   evt.target.classList.toggle("card__like-button_is-active");
 }
+
+export { createCard, deleteCard, likeCard };
