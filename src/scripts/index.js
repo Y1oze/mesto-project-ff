@@ -88,7 +88,6 @@ function renderLoading(flag) {
     .querySelector(".popup_is-opened")
     .querySelector(".popup__button");
 
-
   if (flag) {
     setButtonState(submitButton, "popup__button_disabled");
     submitButton.textContent = "Сохранение...";
@@ -111,17 +110,16 @@ function addNewCard(evt) {
     link: cardLinkInput.value,
   };
 
-  const name = newCard.name
-  const link = newCard.link
+  const name = newCard.name;
+  const link = newCard.link;
 
   addCardToApi(name, link).then((res) => {
-      cardContainer.prepend(
-        createCard(res, handleDeleteCard, handleLikeCard, openImage)
-      );
+    cardContainer.prepend(
+      createCard(res, handleDeleteCard, handleLikeCard, openImage)
+    );
     closePopup();
-  })
+  });
 
-  
   cardForm.reset();
 }
 
@@ -167,6 +165,7 @@ function handlecardFormSubmit(evt) {
     })
     .catch((err) => console.error(err));
 }
+
 function handleDeleteCardSubmit(evt) {
   evt.preventDefault();
 
@@ -244,7 +243,6 @@ function setNameAndJob(profileTitle, profileDescription, avatar) {
 
 // Event Listeners
 profileForm.addEventListener("submit", updateProfileInfo);
-cardForm.addEventListener("submit", addNewCard);
 
 profileEditButton.addEventListener("click", () => {
   populateProfileForm();

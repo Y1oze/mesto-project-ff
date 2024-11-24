@@ -67,8 +67,8 @@ function addCardToApi(name, link) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      name: `${name}`,
-      link: `${link}`,
+      name: name,
+      link: link,
       length: 0,
     }),
   }).then((res) => {
@@ -126,8 +126,6 @@ function setNewAvatar(avatarLink) {
     return getResponseData(res);
   });
 }
-
-
 
 /*
     token: 
