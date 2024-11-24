@@ -1,0 +1,13 @@
+.avatar__edit-button {
+    width: 120px;
+    height: 120px;
+    margin: 0 29px 0 0;
+    transition: opacity .3s;
+  }
+  .avatar__edit-button:hover {
+    background: url('../../../images/edit-icon.svg') center no-repeat;
+    transition: opacity .3s;
+    background-size: 26px 26px;
+    opacity: 2;
+  }
+  

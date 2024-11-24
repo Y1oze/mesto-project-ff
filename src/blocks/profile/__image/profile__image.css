@@ -4,9 +4,15 @@
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
   border-radius: 50%;
+  background-color: transparent;
   background-size: cover;
   background-position: center;
-  margin: 0 29px 0 0;
+  transition: opacity .3s;
+}
+
+.profile__image:hover {
+  transition: opacity .3s;
+  opacity: 0.2;
 }
 
 @media screen and (max-width: 740px) {
