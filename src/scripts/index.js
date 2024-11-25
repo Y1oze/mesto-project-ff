@@ -67,16 +67,22 @@ const validationConfig = {
   inputErrorClass: "popup__input_type_error",
   errorClass: "popup__error_visible",
 };
-setNameAndJob(profileTitle, profileDescription, profileAvatar);
 enableValidation(validationConfig);
 
-getInitialCards().then((res) => {
-  res.forEach((element) => {
-    cardContainer.append(
-      createCard(element, handleDeleteCard, handleLikeCard, openImage, userId)
-    );
-  });
-});
+Promise.all([getUserInfo(), getInitialCards()])
+  .then(([userData, cards]) => {
+    userId = userData._id;
+    profileTitle.textContent = userData.name;
+    profileDescription.textContent = userData.about;
+    profileAvatar.setAttribute("style", `background-image: url(${userData.avatar});`);
+
+    cards.forEach((cardData) => {
+      cardContainer.append(
+        createCard(cardData, handleDeleteCard, handleLikeCard, openImage, userId)
+      );
+    });
+  })
+  .catch((err) => console.error(`Ошибка при загрузке начальных данных: ${err}`));
 
 popupEdit.classList.add("popup_is-animated");
 popupNewCard.classList.add("popup_is-animated");
@@ -113,12 +119,14 @@ function addNewCard(evt) {
   const name = newCard.name;
   const link = newCard.link;
 
-  addCardToApi(name, link).then((res) => {
-    cardContainer.prepend(
-      createCard(res, handleDeleteCard, handleLikeCard, openImage)
-    );
-    closePopup();
-  });
+  addCardToApi(name, link)
+    .then((res) => {
+      cardContainer.prepend(
+        createCard(res, handleDeleteCard, handleLikeCard, openImage)
+      );
+      closePopup();
+    })
+    .catch((err) => console.error(`Ошибка при добавлении карточки: ${err}`));
 
   cardForm.reset();
 }
@@ -135,7 +143,7 @@ function openImage(evt) {
   openPopup(popupImage);
 }
 
-function handleprofileFormSubmit(evt) {
+function handleProfileFormSubmit(evt) {
   evt.preventDefault();
   renderLoading(true);
   setUserInfo(profileNameInput.value, profileJobInput.value)
@@ -143,14 +151,14 @@ function handleprofileFormSubmit(evt) {
       profileTitle.textContent = profileNameInput.value;
       profileDescription.textContent = profileJobInput.value;
     })
-    .then(() => {
+    .finally(() => {
       renderLoading(false);
       closePopup(popupEdit, popupEditCloseButton);
     })
     .catch((err) => console.error(err));
 }
 
-function handlecardFormSubmit(evt) {
+function handleCardFormSubmit(evt) {
   evt.preventDefault();
   renderLoading(true);
   addCardToApi(cardPlaceNameInput.value, cardLinkInput.value)
@@ -175,7 +183,7 @@ function handleDeleteCardSubmit(evt) {
       closePopup(popupDeleteCard, popupDeleteCardButton);
       cardForDelete = {};
     })
-    .catch((err) => console.error(err));
+    .catch((err) => console.error(`Ошибка при удалении карточки: ${err}`));
 }
 function handleEditAvatar(evt) {
   evt.preventDefault();
@@ -210,14 +218,14 @@ function handleLikeCard(cardId, cardLike, likesNumber) {
         likesNumber.textContent = res.likes.length;
         cardLike.classList.remove("card__like-button_is-active");
       })
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(`Ошибка при снятии лайка: ${err}`));
   } else {
     likeCardToApi(cardId)
       .then((res) => {
         likesNumber.textContent = res.likes.length;
         cardLike.classList.add("card__like-button_is-active");
       })
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(`Ошибка при добавлении лайка: ${err}`));
   }
 }
 
@@ -229,16 +237,6 @@ function setInfoFromProfile() {
 
   profileNameInput.value = profileTitle.textContent;
   profileJobInput.value = profileDescription.textContent;
-}
-
-//for load page
-function setNameAndJob(profileTitle, profileDescription, avatar) {
-  getUserInfo().then((res) => {
-    userId = res._id;
-    profileTitle.textContent = res.name;
-    profileDescription.textContent = res.about;
-    avatar.setAttribute("style", `background-image: url(${res.avatar});`);
-  });
 }
 
 // Event Listeners
@@ -272,7 +270,7 @@ closeButtons.forEach((button) => {
   button.addEventListener("click", closePopup);
 });
 
-profileForm.addEventListener("submit", handleprofileFormSubmit);
-cardForm.addEventListener("submit", handlecardFormSubmit);
+profileForm.addEventListener("submit", handleProfileFormSubmit);
+cardForm.addEventListener("submit", handleCardFormSubmit);
 formDeleteCard.addEventListener("submit", handleDeleteCardSubmit);
 formEditAvatar.addEventListener("submit", handleEditAvatar);
