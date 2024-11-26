@@ -150,12 +150,12 @@ function handleProfileFormSubmit(evt) {
     .then(() => {
       profileTitle.textContent = profileNameInput.value;
       profileDescription.textContent = profileJobInput.value;
-    })
-    .finally(() => {
-      renderLoading(false);
       closePopup(popupEdit, popupEditCloseButton);
     })
-    .catch((err) => console.error(err));
+    .catch((err) => console.error(err))
+    .finally(() => {
+      renderLoading(false);
+    });
 }
 
 function handleCardFormSubmit(evt) {
@@ -166,12 +166,12 @@ function handleCardFormSubmit(evt) {
       cardContainer.prepend(
         createCard(res, handleDeleteCard, handleLikeCard, openImage, userId)
       );
-    })
-    .then(() => {
-      renderLoading(false);
       closePopup(popupNewCard, popupNewCardButton);
     })
-    .catch((err) => console.error(err));
+    .catch((err) => console.error(err))
+    .finally(() => {
+      renderLoading(false);
+    });
 }
 
 function handleDeleteCardSubmit(evt) {
@@ -194,13 +194,12 @@ function handleEditAvatar(evt) {
         "style",
         `background-image: url(${res.avatar});`
       );
-    })
-    .then(() => {
-      renderLoading(false);
-
       closePopup(popupAvatar, popupAvatarButton);
     })
-    .catch((err) => console.error(err));
+    .catch((err) => console.error(err))
+    .finally(() => {
+      renderLoading(false);
+    });
 }
 
 function handleDeleteCard(cardId, cardElement) {
