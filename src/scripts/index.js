@@ -89,10 +89,13 @@ popupNewCard.classList.add("popup_is-animated");
 popupImage.classList.add("popup_is-animated");
 
 // Functions
-function renderLoading(flag) {
-  const submitButton = document
-    .querySelector(".popup_is-opened")
-    .querySelector(".popup__button");
+function renderLoading(flag, popup) {
+  const submitButton = popup.querySelector(".popup__button");
+  
+  if (!submitButton) {
+    console.error("Submit button not found in popup");
+    return;
+  }
 
   if (flag) {
     setButtonState(submitButton, "popup__button_disabled");
@@ -145,7 +148,7 @@ function openImage(evt) {
 
 function handleProfileFormSubmit(evt) {
   evt.preventDefault();
-  renderLoading(true);
+  renderLoading(true, popupEdit);
   setUserInfo(profileNameInput.value, profileJobInput.value)
     .then(() => {
       profileTitle.textContent = profileNameInput.value;
@@ -154,13 +157,13 @@ function handleProfileFormSubmit(evt) {
     })
     .catch((err) => console.error(err))
     .finally(() => {
-      renderLoading(false);
+      renderLoading(false, popupEdit);
     });
 }
 
 function handleCardFormSubmit(evt) {
   evt.preventDefault();
-  renderLoading(true);
+  renderLoading(true, popupNewCard);
   addCardToApi(cardPlaceNameInput.value, cardLinkInput.value)
     .then((res) => {
       cardContainer.prepend(
@@ -170,7 +173,7 @@ function handleCardFormSubmit(evt) {
     })
     .catch((err) => console.error(err))
     .finally(() => {
-      renderLoading(false);
+      renderLoading(false, popupNewCard);
     });
 }
 
@@ -187,7 +190,7 @@ function handleDeleteCardSubmit(evt) {
 }
 function handleEditAvatar(evt) {
   evt.preventDefault();
-  renderLoading(true);
+  renderLoading(true, popupAvatar);
   setNewAvatar(avatar.value)
     .then((res) => {
       profileAvatar.setAttribute(
@@ -198,7 +201,7 @@ function handleEditAvatar(evt) {
     })
     .catch((err) => console.error(err))
     .finally(() => {
-      renderLoading(false);
+      renderLoading(false, popupAvatar);
     });
 }
 
